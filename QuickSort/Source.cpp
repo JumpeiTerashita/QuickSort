@@ -5,39 +5,27 @@
 #define NUM_MAX 100
 
 
-int Num[NUM_MAX];
 
-void QuickSort(int _top, int _end)
+
+void Swap(int *a, int *b) { int n = *a; *a = *b; *b = n; }
+
+void QuickSort(int *_top, int *_end)
 {
-
-	// printf("Sort %d ~ %d Started\n", _top, _end);
-
-	if (_top >= _end)
-	{
-		// printf("%d >= %d Don't start\n", _top, _end);
-		return;
-	}
-
+	if (_top == _end) return;
+	
 	bool leftArrowStop = false;
 	bool rightArrowStop = false;
 
-	int Pivot = Num[_top];
-	int ArrowDetectPoint = 0;
-	for (int i = _top, j = _end; (i != j)&& (i<j);)
-	{
-		if (Pivot <= Num[i])	leftArrowStop = true;
-
-		if (Pivot > Num[j]) rightArrowStop = true;
+	int Pivot = *_top;
+	int *leftArrow = _top;
+	int *rightArrow = _end;
+	while(true){
+		if (Pivot <= *leftArrow)	leftArrowStop = true;
+		if (Pivot > *rightArrow)	rightArrowStop = true;
 
 		if (leftArrowStop&&rightArrowStop)
 		{
-			if (Num[i] > Num[j])
-			{
-				int tmp;
-				tmp = Num[i];
-				Num[i] = Num[j];
-				Num[j] = tmp;
-			}
+			if (*leftArrow > *rightArrow) Swap(leftArrow, rightArrow);
 			leftArrowStop = false;
 			rightArrowStop = false;
 		}
@@ -45,75 +33,55 @@ void QuickSort(int _top, int _end)
 		{
 			if (!leftArrowStop)
 			{
-				i++;
-				if (i == j)
+				leftArrow++;
+				if (leftArrow == rightArrow)
 				{
-					if (_top < i)
-					{
-						ArrowDetectPoint = i;
-						break;
-					}
-					else
-					{
-						ArrowDetectPoint = i + 1;
-						break;
-					}
-					
+					break;
 				}
 			}
-			else if (!rightArrowStop)
+			if (!rightArrowStop)
 			{
-				j--;
-				if (i == j)
+				rightArrow--;
+				if (leftArrow == rightArrow)
 				{
-					if (_top < i)
-					{
-						ArrowDetectPoint = i;
-						break;
-					}
-					else
-					{
-						ArrowDetectPoint = i + 1;
-						break;
-					}
+					break;
 				}
 			}
 		}
-		// printf("Next Loop\n");
-
-		
 	}
 
-	// printf("Sort %d ~ %d Finished\n", _top, _end);
+	if (leftArrow != _top && *leftArrow >= Pivot) leftArrow--;
+	else if (rightArrow != _end) rightArrow++;
 
-	if (_top < ArrowDetectPoint - 1) QuickSort(_top, ArrowDetectPoint - 1);
-	if (ArrowDetectPoint < _end)	QuickSort(ArrowDetectPoint, _end);
+	QuickSort(_top, leftArrow);
+	QuickSort(rightArrow, _end);
 
 }
 
 int main()
 {
+	int Num[NUM_MAX];
 	srand((unsigned)time(NULL));
 
 	for (int i = 0; i < NUM_MAX; i++)
 	{
-		Num[i] = rand()%101;
+		Num[i] = rand() % 101;
 	}
 
-	 printf("Before Sort  = \n");
+	printf("Before Sort  = \n");
 	for (int i = 0; i < NUM_MAX; i++)
 	{
-		 printf("%d,", Num[i]);
+		printf("%d,", Num[i]);
 	}
 
-	QuickSort(0, NUM_MAX-1);
+	QuickSort(&Num[0],&Num[NUM_MAX-1]);
 
 	printf("\nHello World\n");
 
-	 printf("Sort Result = \n");
+	printf("Sort Result = \n");
 	for (int i = 0; i < NUM_MAX; i++)
 	{
-		 printf("%d,", Num[i]);
+		printf("%d,", Num[i]);
 	}
 
 	getchar();
